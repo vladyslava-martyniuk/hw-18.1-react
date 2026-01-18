@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import FeedbackOptions from "./components/FeedbackOptions";
 import Statistics from "./components/Statistics";
 import Section from "./components/Section";
@@ -8,6 +8,9 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [message, setMessage] = useState("");
+
+  const messageRef = useRef(null);
 
   const onLeaveFeedback = (option) => {
     switch (option) {
@@ -23,6 +26,23 @@ const App = () => {
       default:
         break;
     }
+
+
+    setMessage("Відгук прийнято!");
+
+    if (messageRef.current) {
+      messageRef.current.style.backgroundColor = "lightgreen";
+      messageRef.current.style.padding = "10px";
+      messageRef.current.style.borderRadius = "5px";
+      messageRef.current.style.fontWeight = "bold";
+      messageRef.current.style.transition = "all 0.3s ease-in-out";
+      messageRef.current.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        if (messageRef.current) messageRef.current.style.transform = "scale(1)";
+      }, 300);
+    }
+
+    setTimeout(() => setMessage(""), 2000); // зникає через 2 сек
   };
 
   const countTotalFeedback = () => good + neutral + bad;
@@ -49,6 +69,7 @@ const App = () => {
             options={["good", "neutral", "bad"]}
             onLeaveFeedback={onLeaveFeedback}
           />
+          {message && <p ref={messageRef}>{message}</p>}
         </Section>
 
         <Section title="Statistics">
